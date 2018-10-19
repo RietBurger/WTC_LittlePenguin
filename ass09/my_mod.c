@@ -17,8 +17,8 @@ MODULE_DESCRIPTION("find mount points");
 static struct proc_dir_entry *proc_entry;
 
 typedef int (*idef)(int(*)(struct vfsmount*, void*), void*,
-				   struct vfsmount*);
-typedef struct vfsmount *(*cdef)(const struct path*);
+				   struct vfsmount *);
+typedef struct vfsmount *(*cdef)(const struct path *);
 
 char *buff;
 
@@ -27,13 +27,14 @@ static int create_seq(struct vfsmount *root, void *data)
 	struct super_block *root_sb;
 	struct seq_file *s;
 	struct path path;
+
 	root_sb = root->mnt_sb;
 	path.mnt = root;
 	path.dentry = root->mnt_root;
 	s = (struct seq_file *)data;
 	seq_printf(s, "%-10s\t%s\n", root_sb->s_id,
-			d_path(&path, buff, PAGE_SIZE));
-	return (0);
+		   d_path(&path, buff, PAGE_SIZE));
+	return 0;
 }
 
 static void mounts(char *dir, struct seq_file *s)
@@ -42,6 +43,7 @@ static void mounts(char *dir, struct seq_file *s)
 	struct vfsmount *root;
 	cdef collectm;
 	idef iteratem;
+
 	iteratem = (void *)kallsyms_lookup_name("iterate_mounts");
 	collectm = (void *)kallsyms_lookup_name("collect_mounts");
 	kern_path(dir, 0, &path);
@@ -60,7 +62,7 @@ static int proc_open(struct inode *i, struct file *f)
 	return single_open(f, &seq_mounts, NULL);
 }
 
-static struct file_operations seqfops = {
+const static struct file_operations seqfops = {
 	.owner = THIS_MODULE,
 	.open = proc_open,
 	.read = seq_read,
@@ -78,7 +80,7 @@ static void __exit mymod_cleanup(void)
 {
 	kfree(buff);
 	remove_proc_entry("mymounts", NULL);
-	printk(KERN_INFO "Cleaning up module.\n");
+	pr_info("RED: Cleaning up module.\n");
 }
 module_init(mymod_init);
 module_exit(mymod_cleanup);
