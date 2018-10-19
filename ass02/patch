@@ -1,0 +1,11 @@
+--- linux/Makefile.orig	2018-07-31 17:29:41.730291833 +0200
++++ linux/Makefile	2018-07-31 17:30:05.041114119 +0200
+@@ -2,7 +2,7 @@
+VERSION = 4
+PATCHLEVEL = 18
+SUBLEVEL = 0
+-EXTRAVERSION = -rc7
++EXTRAVERSION = -thor_kernel
+NAME = Merciless Moray
+
+# *DOCUMENTATION*
